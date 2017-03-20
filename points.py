@@ -92,23 +92,37 @@ class Points:
             size = 2*self.rad + self.log_prob[i]
             draw_point(color, self.coords[i], int(size+0.1), False) # not solid
 
-    def test_points(self,p,nv):
-        "simplify"
+    def test_points(self, p, nv):
+        "count points outside margin and accumulate total amount of prob growth"
         wrongs = 0
-#        norm_nv = dot(nv,nv)
+        incr = 0.0
+        if self.label > 0:
+            "will double if neg or if pos but less than margin"
+            for i in range(self.cnt):
+                if violates_margin(p, nv, self.coords[i], +1):
+                    incr += self.prob[i]
+                    wrongs += 1
+        else:
+            "will double if pos or if neg but abs val less than margin"
+            for i in range(self.cnt):
+                if violates_margin(p, nv, self.coords[i], -1):
+                    incr += self.prob[i]
+                    wrongs += 1
+        return wrongs, self.mass, incr
+
+    def update_points(self, p, nv):
+        "stage was good: actually change the weights"
         if self.label > 0:
             "double if neg or if pos but less than margin"
             for i in range(self.cnt):
-                if violates_margin(p, nv, self.coords[i], +1): # norm_nv removed
+                if violates_margin(p, nv, self.coords[i], +1):
                     self.doub(i)
-                    wrongs += 1
         else:
             "double if pos or neg but abs val less than margin"
             for i in range(self.cnt):
-                if violates_margin(p, nv, self.coords[i], -1): # likewise
+                if violates_margin(p, nv, self.coords[i], -1):
                     self.doub(i)
-                    wrongs += 1
-        return wrongs
+        return
 
     def dump(self):
         print "Count:", self.cnt

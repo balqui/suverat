@@ -58,6 +58,8 @@ from dot import dot
 
 from colors import black, white, red, blue, reddish, blueish
 
+good_stage_threshold = 1.25 # threshold beyond which stage is considered failed: 25%
+
 ## Additional functions for handling vectors and halfspaces and screen
 
 def pair_up(p,q,r):
@@ -196,27 +198,35 @@ def best_margin(ng_pts,s_n_ids,ps_pts,s_p_ids):
     return ref, v_best, c_p_best, s_v_p, s_v_n
 
 def run_it(ng_pts, ps_pts, it):
-    "go once through the loop, return true if must go on"
-    ns = 2 # sampling up to two points per color in this version
-    s_n_ids = ng_pts.sampl(ns)
-    s_p_ids = ps_pts.sampl(ns)
-    ref, vdir, comb_point, s_v_p, s_v_n = best_margin(ng_pts,s_n_ids,ps_pts,s_p_ids)
-    draw_hplane(ref,vdir,ps_pts.color_back,ng_pts.color_back)
-    ng_pts.draw_points(draw_point)
-    ps_pts.draw_points(draw_point)
-    w = ng_pts.test_points(ref,vdir)
-    w += ps_pts.test_points(ref,vdir) ## w: how many misclassifications
-    if show_comb_point:
-        comb_point = int(comb_point[0]), int(comb_point[1])
-        draw_point(white, comb_point, ps_pts.rad)
-    if w == 0:
-        ng_pts.mark_points(draw_point,s_v_n,black)
-        ps_pts.mark_points(draw_point,s_v_p,black)
-    else:
-        ng_pts.mark_points(draw_point,s_n_ids)
-        ps_pts.mark_points(draw_point,s_p_ids)
-    pygame.display.flip()
-    return w > 0
+	"go once through the loop, return true if must go on"
+	ns = 2 # sampling up to two points per color in this version
+	s_n_ids = ng_pts.sampl(ns)
+	s_p_ids = ps_pts.sampl(ns)
+	ref, vdir, comb_point, s_v_p, s_v_n = best_margin(ng_pts,s_n_ids,ps_pts,s_p_ids)
+	draw_hplane(ref,vdir,ps_pts.color_back,ng_pts.color_back)
+	ng_pts.draw_points(draw_point)
+	ps_pts.draw_points(draw_point)
+	if show_comb_point:
+		comb_point = int(comb_point[0]), int(comb_point[1])
+		draw_point(white, comb_point, ps_pts.rad)
+	wn, mn, incrn = ng_pts.test_points(ref,vdir)  ## w: how many misclassifications
+	wp, mp, incrp = ps_pts.test_points(ref,vdir)  ## incr: increase of total prob weight m
+	w = wp + wn
+	if w == 0:
+		ng_pts.mark_points(draw_point,s_v_n,black)
+		ps_pts.mark_points(draw_point,s_v_p,black)
+	else:
+		ng_pts.mark_points(draw_point,s_n_ids)
+		ps_pts.mark_points(draw_point,s_p_ids)
+	pygame.display.flip()
+	ratio = (mn + incrn + mp + incrp)/(mn + mp)
+	if ratio < good_stage_threshold and w != 0:
+		print "Good stage, ratio:", ratio
+		ng_pts.update_points(ref,vdir)
+		ps_pts.update_points(ref,vdir) 
+	else:
+		print "Failed stage, ratio:", ratio
+	return (wn+wp) > 0
 
 
 
@@ -234,7 +244,7 @@ width = screen.get_width()
 height = screen.get_height()
 centerscreen = int(width/2), int(height/2)
 
-show_comb_point = False # show the convex comb point that marks normal vector
+show_comb_point = True # show the convex comb point that marks normal vector
 
 neg_color = screen.map_rgb(red)
 pos_color = screen.map_rgb(blue)
