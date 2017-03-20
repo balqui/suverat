@@ -76,6 +76,8 @@ def pair_up(p,q,r):
 ## draw hyperplane through point p with normal vector nv
 def draw_hplane(p,nv,pc,nc):
     "pc: color for pos side (single pt), nc: color for neg side (segment)"
+    myspace = pygame.surfarray.pixels2d(screen)
+    screen.lock()
     for i in range(width):
         for j in range(height):
             if dot((i-p[0],j-p[1]), nv) >= 0:
@@ -83,6 +85,7 @@ def draw_hplane(p,nv,pc,nc):
                 myspace[i][j] = pc
             else:
                 myspace[i][j] = nc
+    screen.unlock()
 
 def draw_point(color, center, radius, solid=True):
     if solid:
@@ -114,7 +117,7 @@ def set_screen(full_screen):
 
 def best_margin(ng_pts,s_n_ids,ps_pts,s_p_ids):
     "simple version for ns = 2 >= len(s_n_ids) = len(s_p_ids)"
-    print "len(s_p_ids), len(s_n_ids)", len(s_p_ids), len(s_n_ids)
+
     m_sq_best = float("inf")
     p1 = ps_pts.coords[s_p_ids[0]]
     p2 = ps_pts.coords[s_p_ids[-1]] # [1] if len = 2, [0] if len = 1
@@ -225,26 +228,19 @@ pygame.init()
 
 clock = pygame.time.Clock()
 
-show_comb_point = False # show the convex comb point that marks normal vector
-
 full_screen = True # set it to false for smaller test screen
 screen = set_screen(full_screen)
 width = screen.get_width()
 height = screen.get_height()
 centerscreen = int(width/2), int(height/2)
 
+show_comb_point = False # show the convex comb point that marks normal vector
+
 neg_color = screen.map_rgb(red)
 pos_color = screen.map_rgb(blue)
 
 neg_color_back = screen.map_rgb(reddish)
 pos_color_back = screen.map_rgb(blueish)
-
-#rad = 3 # minimal point radius
-
-myspace = pygame.surfarray.pixels2d(screen)
-
-screen.fill(black)
-#screen.blit() # the splash with the help info
 
 pos_points = Points(pos_color,pos_color_back,+1)
 neg_points = Points(neg_color,neg_color_back,-1)
@@ -255,6 +251,26 @@ it = 0
 running = False # to run all the way to convergence
 once = False    # to run step by step
 showing_help = False
+
+splash_surface = pygame.image.load("suverat-splash.png")
+help_surface = pygame.image.load("suverat-help.png")
+
+#splash_rect = splash_surface.get_rect()
+#help_rect = help_surface.get_rect()
+
+splash_width = splash_surface.get_rect().width
+splash_height = splash_surface.get_rect().height
+
+help_width = help_surface.get_rect().width
+help_height = help_surface.get_rect().height
+
+screen.fill(black)
+#splash_surface.unlock()
+screen.blit(splash_surface, ( (width - splash_width)/2, (height - splash_height)/2)) # the splash with the help info
+pygame.display.flip()
+clock.tick(0.5)
+screen.fill(black)
+pygame.display.flip()
 
 while True:
     clock.tick(10)
@@ -318,7 +334,8 @@ while True:
                 showing_help = True
                 running = False
                 once = False
-                # screen.blit() # display help
+                screen.blit(help_surface, ( (width - help_width)/2, (height - help_height)/2))
+                pygame.display.flip()
             elif event.key == 110 or event.key == 111:
                 "n, o: run once"
                 once = True
