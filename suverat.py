@@ -90,8 +90,6 @@ def draw_point(color, center, radius, solid=True):
     else:
         pygame.draw.circle(screen, color, center, radius, 2)
 
-# as in pygame.draw.circle(screen,color,self.coords[i],int(size+0.1),2)
-
 def rand_point(w,h):
     """check docs about screen size"""
     return (randrange(1,w+1),randrange(1,h+1))
@@ -196,7 +194,7 @@ def best_margin(ng_pts,s_n_ids,ps_pts,s_p_ids):
 
 def run_it(ng_pts, ps_pts, it):
     "go once through the loop, return true if must go on"
-    ns = 2 # sampling two points per color in this version
+    ns = 2 # sampling up to two points per color in this version
     s_n_ids = ng_pts.sampl(ns)
     s_p_ids = ps_pts.sampl(ns)
     ref, vdir, comb_point, s_v_p, s_v_n = best_margin(ng_pts,s_n_ids,ps_pts,s_p_ids)
@@ -227,7 +225,7 @@ pygame.init()
 
 clock = pygame.time.Clock()
 
-show_comb_point = True # show the convex comb point that marks normal vector
+show_comb_point = False # show the convex comb point that marks normal vector
 
 full_screen = True # set it to false for smaller test screen
 screen = set_screen(full_screen)
