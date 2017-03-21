@@ -224,7 +224,7 @@ def run_it(ng_pts, ps_pts, it):
 		print "Good stage, ratio:", ratio
 		ng_pts.update_points(ref,vdir)
 		ps_pts.update_points(ref,vdir) 
-	else:
+	elif w != 0:
 		print "Failed stage, ratio:", ratio
 	return (wn+wp) > 0
 
