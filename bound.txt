@@ -5,12 +5,21 @@ to about 1.5, and sampling 4 points (2 of each as we will do)
 corresponds to delta of sqrt(2), so growth must be bounded 
 by total mass divided by 3sqrt(2), which means 23.57%.
 
-(What if we sample more?)
-
 ===
+
+(What if we sample more?)
 
 Years later: why delta is sqrt(2)? Comb dim in the lin sep
 case is at most 3 independently of how many sampled points.
 And why the constant in r plays any role there?
+
+Ah. It's the other way around. If we select r=6 points, with
+a constant of 1.5, we are assuming a delta of sqrt(6/1.5)=2;
+for r=4, sqrt(2.66)...
+
+For the lin sep case, actually delta would be 3 and we would 
+need to sample 14 points (9*1.5). This can be done if we
+resort to libsvm in scikit-learn. Then we just allow increases
+of 11% to the total mass.
 
 
