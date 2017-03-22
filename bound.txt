@@ -7,4 +7,10 @@ by total mass divided by 3sqrt(2), which means 23.57%.
 
 (What if we sample more?)
 
+===
+
+Years later: why delta is sqrt(2)? Comb dim in the lin sep
+case is at most 3 independently of how many sampled points.
+And why the constant in r plays any role there?
+
 
