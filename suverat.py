@@ -194,7 +194,7 @@ def best_margin(ng_pts,s_n_ids,ps_pts,s_p_ids):
             s_v_n.append(s_n_ids[0])
         s_v_p = [ s_p_ids[1] ]
 
-    print "len(s_v_p), len(s_v_n):", len(s_v_p), len(s_v_n)
+#    print "len(s_v_p), len(s_v_n):", len(s_v_p), len(s_v_n)
     return ref, v_best, c_p_best, s_v_p, s_v_n
 
 def run_it(ng_pts, ps_pts, it):
@@ -221,11 +221,11 @@ def run_it(ng_pts, ps_pts, it):
 	pygame.display.flip()
 	ratio = (mn + incrn + mp + incrp)/(mn + mp)
 	if ratio < good_stage_threshold and w != 0:
-		print "Good stage, ratio:", ratio
+#		print "Good stage, ratio:", ratio
 		ng_pts.update_points(ref,vdir)
 		ps_pts.update_points(ref,vdir) 
-	elif w != 0:
-		print "Failed stage, ratio:", ratio
+#	elif w != 0:
+#		print "Failed stage, ratio:", ratio
 	return (wn+wp) > 0
 
 
