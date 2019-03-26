@@ -125,8 +125,8 @@ class Points:
         return
 
     def dump(self):
-        print "Count:", self.cnt
-        print "Total mass:", self.mass
+        print("Count:" + str(self.cnt))
+        print("Total mass:" + str(self.mass))
         for i in range(self.cnt):
-            print "(", self.coords[i][0], ",",
-            print self.coords[i][1], ")  :", self.prob[i]
+            print("(" + str(self.coords[i][0]) + ", " + 
+                str(self.coords[i][1]) + ")  :" + str(self.prob[i]))
