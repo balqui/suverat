@@ -100,8 +100,8 @@ def rand_point(w,h):
     return (randrange(1,w+1),randrange(1,h+1))
 
 def rand_hplane(w,h):
-    w = w/4
-    h = h/4
+    w = w//4
+    h = h//4
     pp = (randrange(w,3*w),randrange(h,3*h)) # chosen in the central area
     vv = (randrange(-w,w),randrange(-h,h))
     v_len = sqrt(dot(vv,vv))
@@ -110,10 +110,11 @@ def rand_hplane(w,h):
 
 def set_screen(full_screen):
     if full_screen:
-        return pygame.display.set_mode((0,0),pygame.FULLSCREEN)
+        "pygame.FULLSCREEN does not work"
+        return pygame.display.set_mode() # (0,0) #,pygame.FULLSCREEN
     else:
         "smaller screen of hardwired size"
-        return pygame.display.set_mode((601, 401))
+        return pygame.display.set_mode((800, 600)) #  ((601, 401))
 
 ## The real meat of the thing: the randomized training algorithm
 
@@ -238,11 +239,11 @@ pygame.init()
 
 clock = pygame.time.Clock()
 
-full_screen = True # set it to false for smaller test screen
+full_screen = False # True # False: smaller test screen; True: full, not sure it works
 screen = set_screen(full_screen)
 width = screen.get_width()
 height = screen.get_height()
-centerscreen = int(width/2), int(height/2)
+# centerscreen = int(width/2), int(height/2)
 
 show_comb_point = True # show the convex comb point that marks normal vector
 
